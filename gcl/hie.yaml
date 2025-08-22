@@ -1,8 +1,16 @@
 cradle:
   stack:
-    - path: ./src
+    - path: "./src"
       component: "gcl:lib"
-    - path: ./app
+
+    - path: "./app/Main.hs"
       component: "gcl:exe:gcl"
-    - path: ./test
+
+    - path: "./app/Paths_gcl.hs"
+      component: "gcl:exe:gcl"
+
+    - path: "./test"
+      component: "gcl:test:gcl-test"
+
+    - path: "./src"
       component: "gcl:test:gcl-test"
