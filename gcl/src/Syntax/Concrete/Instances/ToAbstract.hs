@@ -3,7 +3,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Syntax.Concrete.Instances.ToAbstract where
@@ -18,7 +17,6 @@ import Data.Loc
     (<-->),
   )
 import Data.Loc.Range
-import GHC.Float (logDouble)
 import Pretty.Util
   ( PrettyWithLoc (prettyWithLoc),
     docToText,

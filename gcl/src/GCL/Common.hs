@@ -7,14 +7,10 @@
 
 module GCL.Common where
 
-import Control.Monad.Except
-import Control.Monad.RWS (MonadState (get, put), RWST (..))
+import Control.Monad.RWS (RWST (..))
 import Control.Monad.State (StateT (..))
-import Data.Aeson (ToJSON)
 import Data.Loc
   ( Loc (..),
-    Located,
-    locOf,
   )
 import Data.Loc.Range (Range)
 import Data.Map (Map)

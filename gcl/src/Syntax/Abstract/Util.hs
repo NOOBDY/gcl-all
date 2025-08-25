@@ -3,7 +3,6 @@
 module Syntax.Abstract.Util where
 
 import Data.Bifunctor (second)
-import qualified Data.List as List
 import Data.Loc
   ( Loc (NoLoc),
     locOf,

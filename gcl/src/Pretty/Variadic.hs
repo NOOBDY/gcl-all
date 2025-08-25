@@ -17,7 +17,7 @@ instance Applicative (Variadic a) where
   Expect f <*> Expect g = Expect (\arg -> f arg <*> g arg)
 
 instance Monad (Variadic a) where
-  return = Complete
+  return = pure
   Complete x >>= f = f x
   Expect g >>= f = Expect (g >=> f)
 

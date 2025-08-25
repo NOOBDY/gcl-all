@@ -4,7 +4,6 @@
 module Syntax.Common.Instances.Json where
 
 import Data.Aeson
-import Data.Aeson.Types (Parser)
 import Data.Loc (Loc (..), Pos (..))
 import Syntax.Common.Types
 

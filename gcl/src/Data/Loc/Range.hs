@@ -23,15 +23,15 @@ import Prettyprinter (Pretty (pretty))
 
 -- | Represents an interval of two source locations
 --
---  Very much like `Loc`, except that:
---    1. There's no `NoLoc`
---    2. Cursors is placed IN-BETWEEN two characters rather than ON a character
+-- Very much like `Loc`, except that:
+--   1. There's no `NoLoc`
+--   2. Cursors is placed IN-BETWEEN two characters rather than ON a character
 --
---  For example: to represent the selection of "ABC" in "ABCD"
---    (here we use the tip of ">" and "<" to represent a cursor between two characters)
+-- For example: to represent the selection of "ABC" in "ABCD"
+--   (here we use the tip of ">" and "<" to represent a cursor between two characters)
 --
---    charactor offset    :   0123
---    charactors          :   ABCD
+--   charactor offset    :   0123
+--   charactors          :   ABCD
 
 -------------------------------------------------------
 --    Loc       of "ABC"  :   ^^^     Loc   (Pos ... 0) (Pos ... 2)
@@ -110,7 +110,8 @@ fromLocs :: [Loc] -> [Range]
 fromLocs = mapMaybe fromLoc
 
 mergeRangesUnsafe :: [Range] -> Range
-mergeRangesUnsafe xs = foldl (<>) (head xs) xs
+mergeRangesUnsafe [] = error "trying to merge empty ranges"
+mergeRangesUnsafe (x : xs) = foldl (<>) x xs
 
 mergeRanges :: NonEmpty Range -> Range
 mergeRanges xs = foldl (<>) (NE.head xs) xs
@@ -210,9 +211,9 @@ instance ToJSON Range where
 --------------------------------------------------------------------------------
 
 -- | Compare the cursor position with something
---  EQ: the cursor is placed within that thing
---  LT: the cursor is placed BEFORE (but not touching) that thing
---  GT: the cursor is placed AFTER (but not touching) that thing
+-- EQ: the cursor is placed within that thing
+-- LT: the cursor is placed BEFORE (but not touching) that thing
+-- GT: the cursor is placed AFTER (but not touching) that thing
 compareWithPosition :: (Located a) => Pos -> a -> Ordering
 compareWithPosition pos x = case locOf x of
   NoLoc -> EQ

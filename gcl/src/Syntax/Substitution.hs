@@ -2,7 +2,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE MonoLocalBinds #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Syntax.Substitution where
 
@@ -12,7 +11,7 @@ import Data.Map hiding (map)
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Text (Text)
-import GCL.Common hiding (Substitutable (subst))
+import GCL.Common
 import Syntax.Abstract.Types
 import Syntax.Abstract.Util (declaredNames)
 import Syntax.Common

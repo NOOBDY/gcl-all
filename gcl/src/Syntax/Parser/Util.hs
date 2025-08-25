@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
@@ -90,7 +91,7 @@ markStart = do
   return i
 
 -- | Returns the range of some source location.
---   The range starts from where the ID is retreived, and ends from here
+--  The range starts from where the ID is retreived, and ends from here
 markEnd :: ID -> M Loc
 markEnd i = do
   end <- getCurrentLoc

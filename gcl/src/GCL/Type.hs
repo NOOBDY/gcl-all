@@ -114,9 +114,9 @@ instance CollectIds [Definition] where -- TODO: Collect patterns.
     let (typeDefns, funcSigs, funcDefns) = split defns
     -- Check if there are duplications of definitions.
     -- While checking signatures and function definitions, we take account of the names of (term) constructors.
-    duplicationCheck $ (\(TypeDefn name _ _ _) -> name) <$> typeDefns
-    duplicationCheck $ ((\(FuncDefnSig name _ _ _) -> name) <$> funcSigs) <> gatherCtorNames typeDefns
-    duplicationCheck $ ((\(FuncDefn name _) -> name) <$> funcDefns) <> gatherCtorNames typeDefns
+    duplicationCheck $ (\case (TypeDefn name _ _ _) -> name; _ -> error "impossible") <$> typeDefns
+    duplicationCheck $ ((\case (FuncDefnSig name _ _ _) -> name; _ -> error "impossible") <$> funcSigs) <> gatherCtorNames typeDefns
+    duplicationCheck $ ((\case (FuncDefn name _) -> name; _ -> error "impossible") <$> funcDefns) <> gatherCtorNames typeDefns
     -- Gather the type definitions.
     -- Type definitions are collected first because signatures and function definitions may depend on them.
     collectTypeDefns typeDefns
