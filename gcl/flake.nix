@@ -1,62 +1,46 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    haskellNix.url = "github:input-output-hk/haskell.nix";
+    nixpkgs.follows = "haskellNix/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs }:
-    let
-      supportedSystems = [
-        "x86_64-linux"
-        "aarch64-darwin"
-      ];
+  outputs = { self, nixpkgs, flake-utils, haskellNix }:
+    flake-utils.lib.eachSystem [
+      "x86_64-linux"
+      "aarch64-darwin"
+    ]
+    (system:
+      let
+        overlays = [
+          haskellNix.overlay
+          (final: _prev: {
+            gclProject = final.haskell-nix.stackProject' {
+              src = ./.;
+              compiler-nix-name = "ghc984";
 
-      forEachSupportedSystem = f:
-        nixpkgs.lib.genAttrs supportedSystems (
-          system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
+              shell = {
+                tools = {
+                  stack = {};
+                  haskell-language-server = {};
+                  ormolu = {};
+                };
+
+                buildInputs = with pkgs; [
+                  nixpkgs-fmt
+                ];
+              };
             };
-          in
-          f {
-            inherit system pkgs;
-            hPkgs = pkgs.haskell.packages."ghc984";
-          }
-        );
-    in
-    {
-      devShells = forEachSupportedSystem (
-        {pkgs, hPkgs, system}:
-        let
-          devTools = with hPkgs; [
-            ghc
-            haskell-language-server
-            ormolu
+          })
+        ];
 
-            stack-wrapped
-            pkgs.zlib
-          ];
+        pkgs = import nixpkgs {
+          inherit system overlays;
+          inherit (haskellNix) config;
+        };
 
-          stack-wrapped = pkgs.symlinkJoin {
-            name = "stack"; # will be available as the usual `stack` in terminal
-            paths = [ pkgs.stack ];
-            buildInputs = [ pkgs.makeWrapper ];
-            postBuild = ''
-              wrapProgram $out/bin/stack \
-                --add-flags "\
-                  --no-nix \
-                  --system-ghc \
-                  --no-install-ghc \
-                "
-            '';
-          };
-        in
-        {
-          default = pkgs.mkShellNoCC {
-            buildInputs = devTools;
-
-            LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath devTools;
-          };
-        }
-      );
-    };
+        flake = pkgs.gclProject.flake {};
+      in flake // {
+        packages.default = flake.packages."gcl:exe:gcl";
+      }
+    );
 }
