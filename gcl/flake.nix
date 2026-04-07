@@ -11,32 +11,56 @@
     ]
     (system:
       let
+        pkgs = import nixpkgs {
+          inherit system overlays;
+          inherit (haskellNix) config;
+        };
+
+        stack-wrapped = pkgs.symlinkJoin {
+          name = "stack"; # will be available as the usual `stack` in terminal
+          paths = [ pkgs.stack ];
+          buildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/stack \
+              --add-flags "\
+                --no-nix \
+                --system-ghc \
+                --no-install-ghc \
+              "
+          '';
+        };
+
         overlays = [
           haskellNix.overlay
-          (final: _prev: {
+          (final: prev: {
             gclProject = final.haskell-nix.stackProject' {
-              src = ./.;
+              src = pkgs.haskell-nix.cleanSourceHaskell {
+                src = ./.;
+                name = "gcl";
+              };
+
               compiler-nix-name = "ghc984";
 
               shell = {
                 tools = {
-                  stack = {};
+                  # stack = "3.3.1";
+                  hlint = {};
                   haskell-language-server = {};
                   ormolu = {};
                 };
 
                 buildInputs = with pkgs; [
-                  nixpkgs-fmt
+                  #(pkgs.writeScriptBin "haskell-language-server-wrapper" ''
+                  #  #!${pkgs.stdenv.shell}
+                  #  exec haskell-language-server "$@"
+                  #'')
                 ];
+
+                withHoogle = false;
               };
             };
           })
         ];
-
-        pkgs = import nixpkgs {
-          inherit system overlays;
-          inherit (haskellNix) config;
-        };
 
         flake = pkgs.gclProject.flake {};
       in flake // {
