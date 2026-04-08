@@ -29,8 +29,25 @@
           compiler-nix-name = "ghc984";
         };
 
+        gcl = project.hsPkgs.gcl.components.exes.gcl;
+
       in {
-        packages.default = project.hsPkgs.gcl.components.exes.gcl;
+        packages = {
+          default = gcl;
+
+          docker = pkgs.dockerTools.buildImage {
+            name = "gcl";
+            tag = "latest";
+
+            copyToRoot = pkgs.buildEnv {
+              name = "image-root";
+              paths = [ gcl ];
+              pathsToLink = [ "/bin" ];
+            };
+
+            config.Cmd = [ "/bin/gcl" ];
+          };
+        };
 
         devShells.default = project.shellFor {
           tools = {
