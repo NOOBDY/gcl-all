@@ -8,12 +8,12 @@ function handleReduce(event) {
 
   const el = event.target;
 
-  const redex = el.dataset.redex;
-  const po = el.closest(".gcl-expr").dataset.po;
+  const redex = el.dataset.redex.split(",").map(Number);
+  const po = Number(el.closest(".gcl-expr").dataset.po);
 
   vscode.postMessage({
-    redex,
     po,
+    redex,
   });
 }
 
