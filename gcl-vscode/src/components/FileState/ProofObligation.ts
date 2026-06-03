@@ -5,11 +5,7 @@ import renderSection from "../Section";
 export default function renderProofObligation(
   proofObligation: IProofObligation,
 ): string {
-  const isTrivial =
-    !proofObligation.assumption || proofObligation.assumption.trim() === "True";
-  const renderedExpression = isTrivial
-    ? `<span>${proofObligation.goal}</span>`
-    : `<span>${proofObligation.assumption}</span><span class="implication">=&gt;</span><span>${proofObligation.goal}</span>`;
+  const renderedExpression = `<span>${proofObligation.pred}</span>`;
   const sectionBody: string = /*html */ `
     <div>
       <style scoped>
@@ -39,8 +35,7 @@ export default function renderProofObligation(
   );
 }
 
-// assumption: Predicate;
-// goal: Predicate;
+// pred: Predicate;
 // hash: string;
 // proofLocation?: Range;
 // origin: {
