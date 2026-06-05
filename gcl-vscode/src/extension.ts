@@ -97,6 +97,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // When switching tabs to a .gcl file, display the corresponding state in gclPanel
   const changeTabDisposable = vscode.window.tabGroups.onDidChangeTabs(
     (event: vscode.TabChangeEvent) => {
+      if (event.changed.length < 1) return;
       const changedTab: vscode.Tab = event.changed[0];
       const isFileTab: boolean = "uri" in (changedTab.input as any);
       if (isFileTab) {

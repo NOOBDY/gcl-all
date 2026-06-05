@@ -5,7 +5,7 @@ import renderSection from "../Section";
 export default function renderProofObligation(
   proofObligation: IProofObligation,
 ): string {
-  const renderedExpression = `<span>${proofObligation.pred}</span>`;
+  const renderedExpression = `<span>${proofObligation.reducedPred}</span>`;
   const sectionBody: string = /*html */ `
     <div>
       <style scoped>

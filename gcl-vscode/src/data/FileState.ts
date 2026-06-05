@@ -27,6 +27,7 @@ export interface IHole {
 
 export interface IProofObligation {
   pred: Predicate;
+  reducedPred: Predicate;
   hash: string;
   proofLocation?: Range;
   origin: {
