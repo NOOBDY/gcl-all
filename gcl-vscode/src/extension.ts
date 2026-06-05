@@ -204,9 +204,11 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(updateNotificationHandlerDisposable);
 
   gclPanel.panel.webview.onDidReceiveMessage(
-    async (msg) => {
-      console.log(msg)
-      const _response = await sendRequest("gcl/reduce", msg)
+    async (reduceParams) => {
+      executeOnGclEditor(async (editor) => {
+        const filePath = editor?.document.uri.fsPath;
+        const _response = await sendRequest("gcl/reduce", { filePath, ...reduceParams })
+      });
     },
     undefined,
     context.subscriptions,

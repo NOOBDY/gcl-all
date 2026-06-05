@@ -8,9 +8,11 @@ import Debug.Trace
 import GHC.Generics (Generic)
 import Server.Monad (ServerM)
 import Syntax.Typed.Reduce (Redex)
+import Server.Reduce (reduce)
 
 data ReduceParams = ReduceParams
-  { po :: Int,
+  { filePath :: FilePath,
+    po :: Int,
     redex :: Redex
   }
   deriving (Eq, Show, Generic)
@@ -20,4 +22,4 @@ instance JSON.FromJSON ReduceParams
 instance JSON.ToJSON ReduceParams
 
 handler :: ReduceParams -> ServerM ()
-handler ReduceParams {po, redex} = trace (show po <> " " <> show redex) $ return ()
+handler ReduceParams {filePath, po, redex} = reduce filePath po redex
