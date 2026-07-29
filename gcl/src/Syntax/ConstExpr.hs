@@ -1,31 +1,60 @@
+{-# LANGUAGE TupleSections #-}
+
 module Syntax.ConstExpr where
 
-import Data.Char (isLower)
+import Data.Foldable (foldl')
 import Data.List (partition)
-import Data.Maybe
-  ( listToMaybe,
-    mapMaybe,
-  )
+import Data.Maybe (mapMaybe)
 import qualified Data.Set as Set
-import qualified Data.Text as Text
 import GCL.Common (freeVars)
-import Syntax.Abstract
-import Syntax.Common
-  ( Name,
-    nameToText,
-  )
+import Syntax.Abstract.Types (Declaration (..), Expr)
+import Syntax.Common.Types (Name)
+
+data DeclType = Const | Var
+  deriving (Show)
+
+type Env = [(Name, DeclType)]
 
 pickGlobals :: [Declaration] -> ([Expr], [Expr])
-pickGlobals = partition isGlobalProp . mapMaybe extractAssertion
+pickGlobals decls =
+  -- TODO: partition directly in the fold
+  partition (isGlobalProp env' Nothing) (mapMaybe extractAssertion decls)
   where
-    -- An assertion is a global prop
-    -- if all of its free variables are of CONSTANTS
-    isGlobalProp :: Expr -> Bool
-    isGlobalProp assertion = Set.null $ Set.filter nameIsVar (freeVars assertion)
+    env' =
+      foldl'
+        ( \acc decl -> case decl of
+            ConstDecl names _ Nothing _ -> map (,Const) names <> acc
+            ConstDecl names _ (Just assertion) _ ->
+              map
+                ( \name ->
+                    if isGlobalProp acc (Just name) assertion
+                      then (name, Const)
+                      else (name, Var)
+                )
+                names
+                <> acc
+            VarDecl names _ _ _ -> map (,Var) names <> acc
+        )
+        []
+        decls
 
-    nameIsVar :: Name -> Bool
-    nameIsVar name =
-      maybe False isLower (listToMaybe (Text.unpack (nameToText name)))
+    -- An assertion is a global property
+    -- if all of its free variables are of CONSTANTS
+    -- `Set Name -> Expr -> Bool` would be more elegant
+    -- but probably would also be much more expensive
+    isGlobalProp :: Env -> Maybe Name -> Expr -> Bool
+    isGlobalProp env (Just self) assertion =
+      let fv = freeVars assertion -- XXX: why does `freeVars` not consider bound vars?
+       in (Set.notMember self fv || all (isConst env) (Set.delete self fv)) -- XXX: is this correct?
+    isGlobalProp env Nothing assertion =
+      all (isConst env) (freeVars assertion)
+
+    isConst :: Env -> Name -> Bool
+    isConst env name =
+      case lookup name env of
+        Just Const -> True
+        Just Var -> False
+        Nothing -> error $ "unknown name: " <> show name
 
     -- Extracts both the assertion and those declared names
     extractAssertion :: Declaration -> Maybe Expr

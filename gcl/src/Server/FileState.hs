@@ -22,7 +22,8 @@ data FileState = FileState
     fsSemanticTokens :: ![LSP.SemanticTokenAbsolute],
     fsDefinitionLinks :: !(IntervalMap OriginTargetRanges),
     fsHoverInfos :: !(IntervalMap LSP.Hover),
-    fsDefinitions :: ![(Name, T.Expr)]
+    fsDefinitions :: ![(Name, T.Expr)],
+    fsGlobalProps :: ![T.Expr]
   }
 
 emptyFileStateWithErrors :: [Error] -> FileState
@@ -38,7 +39,8 @@ emptyFileStateWithErrors errs =
       fsSemanticTokens = [],
       fsDefinitionLinks = mempty,
       fsHoverInfos = mempty,
-      fsDefinitions = []
+      fsDefinitions = [],
+      fsGlobalProps = []
     }
 
 data PendingEdit = PendingEdit

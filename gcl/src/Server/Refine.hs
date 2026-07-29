@@ -196,7 +196,8 @@ loadConcreteFragment typeEnv idCount spec stmts = do
         fsSemanticTokens = collectHighlightingFromStmts stmts,
         fsDefinitionLinks = mempty, -- TODO: needs scope info from declarations
         fsHoverInfos = collectHoverInfoFromStmts elaborated,
-        fsDefinitions = [] -- no definitions contained in stmts
+        fsDefinitions = [], -- no definitions contained in stmts
+        fsGlobalProps = [] -- no global properties contained in stmts
       }
   where
     foldTIResult :: [(T.Stmt, Inference)] -> ([T.Stmt], Inference)
@@ -430,7 +431,8 @@ mergeFileState moved fragment =
       fsSemanticTokens = fsSemanticTokens moved ++ fsSemanticTokens fragment,
       fsDefinitionLinks = fsDefinitionLinks moved <> fsDefinitionLinks fragment,
       fsHoverInfos = fsHoverInfos moved <> fsHoverInfos fragment,
-      fsDefinitions = fsDefinitions moved ++ fsDefinitions fragment
+      fsDefinitions = fsDefinitions moved ++ fsDefinitions fragment,
+      fsGlobalProps = fsGlobalProps moved ++ fsGlobalProps fragment
     }
 
 -- | Updates hole expression to latest refined expression in every specifications and POs
