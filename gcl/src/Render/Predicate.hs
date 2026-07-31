@@ -74,6 +74,9 @@ exprOfPred p = case p of
     makeOpExpr op x y = App (App op x (locOf x)) y (locOf y)
 -}
 
+-- This instance is used only for static Pretty output, which discards redex
+-- annotations. Interactive PO rendering goes through Server.ToClient with
+-- fsDefinitions, so no definition environment is needed here.
 instance RenderSection PO where
   renderSection (PO _predicate reducedPredicate anchorHash anchorLoc origin) =
     Section Plain $
@@ -83,7 +86,7 @@ instance RenderSection PO where
           anchorHash
           anchorLoc
       ]
-        <> [Code (renderPOPredRZ reducedPredicate)]
+        <> [Code (renderPOPredRZ [] reducedPredicate)]
         <> explanation
     where
       explanation = case origin of
