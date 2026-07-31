@@ -450,9 +450,11 @@ updateHoleExprs hole expr holeMapping fs =
 
     updatePO :: PO -> PO
     updatePO po =
-      po
-        { poPred = updateExpr hole expr holeMapping (poPred po)
-        }
+      let pred' = updateExpr hole expr holeMapping (poPred po)
+       in po
+            { poPred = pred',
+              poReducedPred = pred'
+            }
 
 updateExpr :: Hole -> T.Expr -> [(Int, Int)] -> T.Expr -> T.Expr
 updateExpr hole@(Hole holeNumber _ _ _ _) replacement holeMapping expr = case expr of
