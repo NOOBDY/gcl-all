@@ -174,7 +174,7 @@ convertWarning :: GCL.StructWarning -> StructWarning
 convertWarning (GCL.MissingBound rng) = MissingBound {range = toLSPRange rng}
 
 convertGlobalProp :: GCL.Pred -> Text.Text
-convertGlobalProp prop = inlinesToHtml (renderExprRZ prop)
+convertGlobalProp prop = inlinesToHtml (render prop)
 
 --------------------------------------------------------------------------------
 -- JSON instances for client types
