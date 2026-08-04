@@ -1,7 +1,7 @@
 import renderSection from "../Section";
 
-export default function renderGlobalProp(
-  globalProp: string
+export default function renderGlobalProps(
+  globalProps: string[]
 ): string {
-  return renderSection("Global Property", globalProp)
+  return renderSection("Global Property", globalProps.join(" ∧</br>"))
 }
