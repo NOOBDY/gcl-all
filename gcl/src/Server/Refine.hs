@@ -440,7 +440,8 @@ updateHoleExprs :: Hole -> T.Expr -> [(Int, Int)] -> FileState -> FileState
 updateHoleExprs hole expr holeMapping fs =
   fs
     { fsSpecifications = map updateSpec (fsSpecifications fs),
-      fsProofObligations = map updatePO (fsProofObligations fs)
+      fsProofObligations = map updatePO (fsProofObligations fs),
+      fsGlobalProps = map updateGlobalProps (fsGlobalProps fs)
     }
   where
     updateSpec :: Spec -> Spec
@@ -455,6 +456,9 @@ updateHoleExprs hole expr holeMapping fs =
       po
         { poPred = updateExpr hole expr holeMapping (poPred po)
         }
+
+    updateGlobalProps :: T.Expr -> T.Expr
+    updateGlobalProps = updateExpr hole expr holeMapping
 
 updateExpr :: Hole -> T.Expr -> [(Int, Int)] -> T.Expr -> T.Expr
 updateExpr hole@(Hole holeNumber _ _ _ _) replacement holeMapping expr = case expr of

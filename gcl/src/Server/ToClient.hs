@@ -35,7 +35,7 @@ import Pretty.Typed ()
 import Prettyprinter (Pretty (pretty))
 import Render.Class (Render (..))
 import Render.Element (inlinesToHtml)
-import Render.Syntax.Typed (renderExprRZ, renderPOPredRZ)
+import Render.Syntax.Typed (renderPOPredRZ)
 import qualified Server.Monad as Server
 import Server.SrcLoc (toLSPPosition, toLSPRange)
 import qualified Syntax.Common as Common
