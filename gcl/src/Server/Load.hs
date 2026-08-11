@@ -208,6 +208,13 @@ instance CollectHole C.DeclType where
 instance CollectHole C.DeclProp where
   collectHole (C.DeclProp _ expr _) = collectHole expr
 
+instance CollectHole C.Procedure where
+  collectHole (C.Procedure _ _ _ pre block post) =
+    collectHole pre <> collectHole block <> collectHole post
+
+instance CollectHole C.ProcBlock where
+  collectHole (C.ProcBlock _ program _) = collectHole program
+
 instance CollectHole C.Definition where
   collectHole (C.TypeDefn {}) = mempty
   collectHole (C.ValDefnSig {}) = mempty
@@ -229,7 +236,6 @@ instance CollectHole C.Stmt where
   collectHole (C.HLookup _ _ _ a) = collectHole a
   collectHole (C.HMutate _ a _ b) = collectHole a <> collectHole b
   collectHole (C.Dispose _ a) = collectHole a
-  collectHole (C.Block _ program _) = collectHole program
 
 instance CollectHole C.GdCmd where
   collectHole (GdCmd expr _ stmts) = collectHole expr <> collectHole stmts

@@ -132,6 +132,9 @@ instance Collect () Highlighting DeclType where
     collect a
     collect b
 
+instance Collect () Highlighting Procedure where
+  collect Procedure {} = undefined -- XXX: idk how this works
+
 --------------------------------------------------------------------------------
 -- SemanticTokenModifiers_t
 
@@ -190,8 +193,6 @@ instance Collect () Highlighting Stmt where
     Dispose tok a -> do
       addHighlighting J.SemanticTokenTypes_Keyword [] tok
       collect a
-    -- TODO:
-    Block {} -> return ()
 
 instance Collect () Highlighting GdCmd where
   collect (GdCmd a tok bs) = do

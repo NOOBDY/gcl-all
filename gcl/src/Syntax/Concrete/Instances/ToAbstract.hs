@@ -28,6 +28,7 @@ import Syntax.Common (ArithOp, Name (..))
 import Syntax.Concrete.Instances.Located ()
 import Syntax.Concrete.Types
 import qualified Syntax.ConstExpr as ConstExpr
+import qualified Hack
 
 --------------------------------------------------------------------------------
 
@@ -69,7 +70,7 @@ instance ToAbstract Name Name where
 -- | Program
 instance ToAbstract Program A.Program where
   toAbstract prog@(Program ds stmts') = do
-    (decls, defns) <- second concat . partitionEithers <$> mapM toAbstract ds
+    (decls, defns, procs) <- (\(a, b, c) -> (a, concat b, c)) . Hack.partitionChoice3 <$> mapM toAbstract ds
     let (globProps, assertions) = ConstExpr.pickGlobals decls
     let pre = [A.Assert (A.conjunct assertions) Nothing | not (null assertions)]
     stmts <- toAbstract stmts'
@@ -187,6 +188,12 @@ withRange f x = ($ maybeRangeOf x) <$> f x
 
 --------------------------------------------------------------------------------
 
+-- | Procedure
+instance ToAbstract Procedure A.Procedure where
+  toAbstract proc = undefined -- XXX: idk how this works
+
+--------------------------------------------------------------------------------
+
 -- | Statement
 instance ToAbstract Stmt A.Stmt where
   toAbstract stmt = withRange toAbstract' stmt
@@ -210,7 +217,6 @@ instance ToAbstract Stmt A.Stmt where
       toAbstract' (HLookup x _ _ e) = A.HLookup x <$> toAbstract e
       toAbstract' (HMutate _ e1 _ e2) = A.HMutate <$> toAbstract e1 <*> toAbstract e2
       toAbstract' (Dispose _ e) = A.Dispose <$> toAbstract e
-      toAbstract' (Block _ p _) = A.Block <$> toAbstract p
 
 instance ToAbstract GdCmd A.GdCmd where
   toAbstract (GdCmd a _ b) =

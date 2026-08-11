@@ -65,6 +65,14 @@ data Declaration
 
 --------------------------------------------------------------------------------
 
+data Procedure = Name [ProcParam] Expr Program Expr
+
+data ProcParam
+  = VarParam [Name] Type (Maybe Range)
+  | ValueParam [Name] Type (Maybe Range)
+
+--------------------------------------------------------------------------------
+
 data Stmt
   = Skip (Maybe Range)
   | Abort (Maybe Range)

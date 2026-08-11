@@ -30,6 +30,9 @@ instance MaybeRanged Declaration where
   maybeRangeOf (ConstDecl l r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (VarDecl l r) = maybeRangeOf l <---> maybeRangeOf r
 
+instance MaybeRanged Procedure where
+  maybeRangeOf (Procedure l _ _ _ _ r) = maybeRangeOf l <---> maybeRangeOf r
+
 instance MaybeRanged TypeDefnCtor where
   maybeRangeOf (TypeDefnCtor l r) = maybeRangeOf l <---> maybeRangeOf r
 
@@ -63,7 +66,6 @@ instance MaybeRanged Stmt where
   maybeRangeOf (HLookup l _ _ r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (HMutate l _ _ r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (Dispose l r) = maybeRangeOf l <---> maybeRangeOf r
-  maybeRangeOf (Block l _ r) = maybeRangeOf l <---> maybeRangeOf r
 
 --------------------------------------------------------------------------------
 
