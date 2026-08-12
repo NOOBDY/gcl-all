@@ -6,6 +6,7 @@ import Data.List (foldl')
 import GCL.Range (MaybeRanged (..))
 import qualified Language.LSP.Protocol.Message as LSP
 import qualified Language.LSP.Protocol.Types as LSP
+import Pretty.Util (PrettyWithRange (..))
 
 -- FIXME: this function is to help migrating LSP library versions
 -- previous LSP uses `Int` for line and character offsets
@@ -50,10 +51,16 @@ data Choice3 a b c
   | C c
   deriving (Eq, Show)
 
+choice3 :: (a -> d) -> (b -> d) -> (c -> d) -> Choice3 a b c -> d
+choice3 f _ _ (A a) = f a
+choice3 _ g _ (B b) = g b
+choice3 _ _ h (C c) = h c
+
 instance (MaybeRanged a, MaybeRanged b, MaybeRanged c) => MaybeRanged (Choice3 a b c) where
-  maybeRangeOf (A a) = maybeRangeOf a
-  maybeRangeOf (B b) = maybeRangeOf b
-  maybeRangeOf (C c) = maybeRangeOf c
+  maybeRangeOf = choice3 maybeRangeOf maybeRangeOf maybeRangeOf
+
+instance (PrettyWithRange a, PrettyWithRange b, PrettyWithRange c) => PrettyWithRange (Choice3 a b c) where
+  prettyWithRange = choice3 prettyWithRange prettyWithRange prettyWithRange
 
 partitionChoice3 :: [Choice3 a b c] -> ([a], [b], [c])
 partitionChoice3 =

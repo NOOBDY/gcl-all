@@ -192,10 +192,3 @@ mutate = HMutate <$> tokenStar <*> expression <*> tokenAssign <*> expression
 
 dispose :: Parser Stmt
 dispose = Dispose <$> tokenDispose <*> expression
-
--- programBlock :: Parser Program -> Parser Stmt
--- programBlock program =
---   Block
---     <$> tokenBlockOpen
---     <*> program
---     <*> tokenBlockClose

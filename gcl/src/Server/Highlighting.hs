@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -81,6 +82,9 @@ instance Collect () Highlighting AsName where
 
 --------------------------------------------------------------------------------
 -- Program
+
+instance (Collect () Highlighting a, Collect () Highlighting b, Collect () Highlighting c) => Collect () Highlighting (Hack.Choice3 a b c) where
+  collect = Hack.choice3 collect collect collect
 
 instance Collect () Highlighting Program where
   collect (Program as bs) = do

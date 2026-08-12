@@ -9,26 +9,24 @@ module Syntax.Concrete.Instances.ToAbstract where
 
 import Control.Arrow ((***))
 import Control.Monad.State
-import Data.Bifunctor (Bifunctor (..))
 import Data.Bitraversable (Bitraversable (bitraverse))
-import Data.Either (partitionEithers)
 import qualified Data.List as List
 import qualified Data.Text as Text
 import GCL.Common
 import GCL.Range (MaybeRanged (maybeRangeOf), Range (..), rangeOf, (<--->))
+import qualified Hack
 import Pretty.Util
   ( PrettyWithRange (prettyWithRange),
     docToText,
     toDoc,
   )
-import qualified Syntax.Abstract as A
 import qualified Syntax.Abstract.Operator as A
+import qualified Syntax.Abstract.Types as A
 import Syntax.Abstract.Util
-import Syntax.Common (ArithOp, Name (..))
+import Syntax.Common.Types (ArithOp, Name (..))
 import Syntax.Concrete.Instances.Located ()
 import Syntax.Concrete.Types
 import qualified Syntax.ConstExpr as ConstExpr
-import qualified Hack
 
 --------------------------------------------------------------------------------
 
@@ -64,6 +62,11 @@ instance (ToAbstract a b) => ToAbstract [a] [b] where
 
 instance ToAbstract Name Name where
   toAbstract = return
+
+instance (ToAbstract a1 b1, ToAbstract a2 b2, ToAbstract a3 b3) => ToAbstract (Hack.Choice3 a1 a2 a3) (Hack.Choice3 b1 b2 b3) where
+  toAbstract (Hack.A a) = Hack.A <$> toAbstract a
+  toAbstract (Hack.B b) = Hack.B <$> toAbstract b
+  toAbstract (Hack.C c) = Hack.C <$> toAbstract c
 
 --------------------------------------------------------------------------------
 

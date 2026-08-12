@@ -65,7 +65,7 @@ data Declaration
 
 --------------------------------------------------------------------------------
 
-data Procedure = Name [ProcParam] Expr Program Expr
+data Procedure = Procedure Name [ProcParam] Expr Program Expr
 
 data ProcParam
   = VarParam [Name] Type (Maybe Range)

@@ -48,6 +48,7 @@ data SepBy (sep :: Symbol) a = Head a | Delim a (Token sep) (SepBy sep a)
 --------------------------------------------------------------------------------
 
 -- XXX: why put everyting together and partition in abstract?
+
 -- | Program
 data Program
   = Program

@@ -14,6 +14,7 @@ import GCL.Dependency (evalDependencyResolution)
 import GCL.Range (Range, posCol, posLine, rangeEnd, rangeStart)
 import GCL.Type2.ToTyped (runToTyped)
 import qualified GCL.WP as WP
+import qualified Hack
 import Server.GoToDefn (collectLocationLinks)
 import Server.Highlighting (collectHighlighting)
 import Server.Hover (collectHoverInfo)
@@ -187,6 +188,9 @@ instance (CollectHole a) => CollectHole (Maybe a) where
 
 instance (CollectHole a, CollectHole b) => CollectHole (Either a b) where
   collectHole = either collectHole collectHole
+
+instance (CollectHole a, CollectHole b, CollectHole c) => CollectHole (Hack.Choice3 a b c) where
+  collectHole = Hack.choice3 collectHole collectHole collectHole
 
 instance (CollectHole a) => CollectHole (SepBy s a) where
   collectHole (Head c) = collectHole c
