@@ -46,7 +46,11 @@ instance MaybeRanged DeclProp where
   maybeRangeOf (DeclProp l _ r) = maybeRangeOf l <---> maybeRangeOf r
 
 instance MaybeRanged DeclType where
-  maybeRangeOf (DeclType l r) = maybeRangeOf l <---> maybe Nothing maybeRangeOf r
+  maybeRangeOf (DeclType l r) = maybeRangeOf l <---> maybeRangeOf r
+
+instance MaybeRanged ProcDecl where
+  maybeRangeOf (PVarDecl l r) = maybeRangeOf l <---> maybeRangeOf r
+  maybeRangeOf (PValueDecl l r) = maybeRangeOf l <---> maybeRangeOf r
 
 -------------------------------------------------------------------------------
 

@@ -193,7 +193,21 @@ withRange f x = ($ maybeRangeOf x) <$> f x
 
 -- | Procedure
 instance ToAbstract Procedure A.Procedure where
-  toAbstract proc = undefined -- XXX: idk how this works
+  toAbstract (Procedure _ name params pre block post) =
+    A.Procedure name <$> toAbstractParams params <*> toAbstract pre <*> toAbstractBlock block <*> toAbstract post
+    where
+      toAbstractParams (ProcParam _ params' _) =
+        mapM
+          ( \case
+              d@(PVarDecl _ base) -> do
+                (names, ty) <- toAbstract base
+                return $ A.VarParam names ty (maybeRangeOf d)
+              d@(PValueDecl _ base) -> do
+                (names, ty) <- toAbstract base
+                return $ A.ValueParam names ty (maybeRangeOf d)
+          )
+          $ sepByToList params'
+      toAbstractBlock (ProcBlock _ program _) = toAbstract program
 
 --------------------------------------------------------------------------------
 
