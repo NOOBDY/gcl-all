@@ -2,6 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE UndecidableInstances #-}
 
@@ -77,7 +78,7 @@ instance ToAbstract Program A.Program where
     let (globProps, assertions) = ConstExpr.pickGlobals decls
     let pre = [A.Assert (A.conjunct assertions) Nothing | not (null assertions)]
     stmts <- toAbstract stmts'
-    return $ A.Program defns decls globProps (pre ++ stmts) (maybeRangeOf prog)
+    return $ A.Program defns decls procs globProps (pre ++ stmts) (maybeRangeOf prog)
 
 --------------------------------------------------------------------------------
 
