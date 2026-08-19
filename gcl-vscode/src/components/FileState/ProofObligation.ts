@@ -31,7 +31,7 @@ export default function renderProofObligation(
     sectionBody,
     proofObligation.origin.location &&
       `at ${renderRange(proofObligation.origin.location)}`,
-    proofObligation.hash.slice(0, 6).toUpperCase(),
+    `<button>Proof</button>`,
   );
 }
 
