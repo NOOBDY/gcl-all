@@ -31,6 +31,9 @@ import GCL.Predicate
 import GCL.Range (Range)
 import GCL.Type2.Types (Env)
 import GCL.WP.Types
+import Pretty (LayoutOptions (LayoutOptions), PageWidth (Unbounded), pretty)
+import Prettyprinter (layoutPretty)
+import Prettyprinter.Render.Text (renderStrict)
 import Syntax.Abstract.Types (Type (..))
 import Syntax.Common
   ( nameToText,
@@ -38,9 +41,6 @@ import Syntax.Common
 import Syntax.Typed
 import Syntax.Typed.Operator (disjunct, implies)
 import Syntax.Typed.Util
-import Prettyprinter.Render.Text (renderStrict)
-import Prettyprinter (layoutPretty, defaultLayoutOptions)
-import Pretty (pretty)
 
 -- Syntax Manipulation
 
@@ -100,7 +100,7 @@ tellPO p q origin = unless (p == q) $ do
   -- p' <- substitute [] [] p
   -- q' <- substitute [] [] q
   let predicate = implies p q
-  let strippedPred = renderStrict $ layoutPretty defaultLayoutOptions $ pretty predicate
+  let strippedPred = renderStrict $ layoutPretty (LayoutOptions Unbounded) $ pretty predicate
 
   tell ([PO predicate predicate strippedPred Nothing origin], [], [], mempty)
 
