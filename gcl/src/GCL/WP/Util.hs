@@ -14,7 +14,6 @@ import Control.Monad.RWS
     local,
     withRWST,
   )
-import qualified Data.Hashable as Hashable
 import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -32,8 +31,6 @@ import GCL.Predicate
 import GCL.Range (Range)
 import GCL.Type2.Types (Env)
 import GCL.WP.Types
-import Numeric (showHex)
-import Pretty (toString)
 import Syntax.Abstract.Types (Type (..))
 import Syntax.Common
   ( nameToText,
@@ -41,6 +38,9 @@ import Syntax.Common
 import Syntax.Typed
 import Syntax.Typed.Operator (disjunct, implies)
 import Syntax.Typed.Util
+import Prettyprinter.Render.Text (renderStrict)
+import Prettyprinter (layoutPretty, defaultLayoutOptions)
+import Pretty (pretty)
 
 -- Syntax Manipulation
 
@@ -100,9 +100,9 @@ tellPO p q origin = unless (p == q) $ do
   -- p' <- substitute [] [] p
   -- q' <- substitute [] [] q
   let predicate = implies p q
-  let anchorHash =
-        Text.pack $ showHex (abs (Hashable.hash (toString predicate))) ""
-  tell ([PO predicate predicate anchorHash Nothing origin], [], [], mempty)
+  let strippedPred = renderStrict $ layoutPretty defaultLayoutOptions $ pretty predicate
+
+  tell ([PO predicate predicate strippedPred Nothing origin], [], [], mempty)
 
 tellPO' :: Origin -> Pred -> Pred -> WP ()
 tellPO' l p q = tellPO p q l

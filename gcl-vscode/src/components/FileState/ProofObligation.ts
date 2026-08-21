@@ -27,16 +27,12 @@ export default function renderProofObligation(
     </div>
   `;
 
-  // ChatGPT magic ✨
-  const regex = /<span\b[^>]*>([^<]*)<\/span>/;
-  const strippedPred = proofObligation.pred.match(regex)?.[1];
-
   return renderSection(
     "Proof Obligation",
     sectionBody,
     proofObligation.origin.location &&
       `at ${renderRange(proofObligation.origin.location)}`,
-    `<button class="proof" data-pred="${strippedPred}">Proof</button>`,
+    `<button class="proof" data-pred="${proofObligation.strippedPred}">Proof</button>`,
   );
 }
 
