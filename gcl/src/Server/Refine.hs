@@ -453,9 +453,11 @@ updateHoleExprs hole expr holeMapping fs =
 
     updatePO :: PO -> PO
     updatePO po =
-      po
-        { poPred = updateExpr hole expr holeMapping (poPred po)
-        }
+      let pred' = updateExpr hole expr holeMapping (poPred po)
+       in po
+            { poPred = pred',
+              poReducedPred = pred'
+            }
 
     updateGlobalProps :: T.Expr -> T.Expr
     updateGlobalProps = updateExpr hole expr holeMapping
