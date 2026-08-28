@@ -240,7 +240,7 @@ export async function activate(context: vscode.ExtensionContext) {
             const document = editor.document;
             const lastLine = document.lineAt(document.lineCount - 1);
 
-            const proofBlock = `\n{-\n${message.pred}\n\n-}\n`;
+            const proofBlock = `\n{-\n${message.pred}\n---\n\n-}\n`;
 
             await editor.edit((builder) => {
               builder.insert(lastLine.range.end, proofBlock);
