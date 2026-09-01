@@ -36,7 +36,6 @@ statement :: Parser Program -> Parser Stmt
 statement program =
   choice
     [ skip,
-      proofBlock,
       abort,
       try assertion,
       loopInvariant,
@@ -140,13 +139,30 @@ spec =
     notTokSpecClose (R _ TokSpecClose) = False
     notTokSpecClose _ = True
 
-proofBlock :: Parser Stmt
-proofBlock = do
-  ((proofAnchor, contents, whole), r) <- getRange $ extract extractProof
-  return $ Proof (Text.pack proofAnchor) (Text.pack contents) (Text.pack whole) r
+blockComment :: Parser BlockComment
+blockComment = BlockComment <$>
+  tokenBlockCommentOpen <*> (try proofBlock <|> comment) <*> tokenBlockCommentClose
+
+notTokBlockCommentClose :: R Tok -> Bool
+notTokBlockCommentClose (R _ TokBlockCommentClose) = False
+notTokBlockCommentClose _ = True
+
+proofBlock :: Parser CommentContent
+proofBlock = withRange $ Proof <$> expression <*> tokenProofSep <*> proofText
   where
-    extractProof (TokProof anchor contents whole) = Just (anchor, contents, whole)
-    extractProof _ = Nothing
+    proofText = takeWhileP (Just "proof") notTokBlockCommentClose
+
+
+comment :: Parser CommentContent
+comment = withRange $ Comment <$> takeWhileP (Just "comment") notTokBlockCommentClose
+
+-- proofBlock :: Parser CommentContent
+-- proofBlock = do
+--   ((proofAnchor, contents, whole), r) <- getRange $ extract extractProof
+--   return $ Proof (Text.pack proofAnchor) (Text.pack contents) (Text.pack whole) r
+--   where
+--     extractProof (TokProof anchor contents whole) = Just (anchor, contents, whole)
+--     extractProof _ = Nothing
 
 -- proofAnchors :: Parser Stmt
 -- proofAnchors =

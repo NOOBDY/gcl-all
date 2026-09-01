@@ -100,6 +100,15 @@ tokenDeclOpen = adapt TokDeclOpen "{:"
 tokenDeclClose :: Parser (Token ":}")
 tokenDeclClose = adapt TokDeclClose ":}"
 
+tokenBlockCommentOpen :: Parser (Token "{-")
+tokenBlockCommentOpen = adapt TokBlockCommentOpen "{-"
+
+tokenBlockCommentClose :: Parser (Token "-}")
+tokenBlockCommentClose = adapt TokBlockCommentClose "-}"
+
+tokenProofSep :: Parser (Token "---")
+tokenProofSep = adapt TokProofSep "---"
+
 tokenColon :: Parser (Token ":")
 tokenColon = adapt TokColon "colon"
 
@@ -163,3 +172,4 @@ tokenArrow =
 
 tokenUnderscore :: Parser (Token "_")
 tokenUnderscore = adapt TokUnderscore "underscore \"_\""
+

@@ -32,6 +32,10 @@ import Prelude hiding
 -- Program
 --------------------------------------------------------------------------------
 
+-- XXX: this design is too weird
+-- i don't understand 90% of it but i keep run into problems
+-- should we reconsider for a better approach?
+
 program :: Parser Program
 program = do
   mixed <-
