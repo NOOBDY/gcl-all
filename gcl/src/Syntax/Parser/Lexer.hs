@@ -244,7 +244,8 @@ instance Show Tok where
 -- | Regular expressions & the lexer
 tokRE :: RE Char Tok
 tokRE =
-  TokSkip <$ string "skip"
+  TokSkip
+    <$ string "skip"
       <|> TokAbort
     <$ string "abort"
       <|> TokDo
@@ -332,6 +333,8 @@ tokRE =
     <$ string "{-"
       <|> TokBlockCommentClose
     <$ string "-}"
+      <|> TokProofSep
+    <$ string "---"
       -- literals
       <|> TokUnderscore
     <$ string "_"

@@ -3,9 +3,15 @@
 
 module Syntax.Parser.Program where
 
-import qualified Data.Either as Either
-import Syntax.Common (Name)
-import Syntax.Concrete hiding (Op)
+import Syntax.Common.Types (Name)
+import Syntax.Concrete.Types
+  ( BlockComment,
+    DeclType (..),
+    Declaration (..),
+    DefinitionBlock,
+    Program (..),
+    Stmt,
+  )
 import Syntax.Parser.Basics
 import Syntax.Parser.Definition
 import Syntax.Parser.Stmt
@@ -32,30 +38,37 @@ import Prelude hiding
 -- Program
 --------------------------------------------------------------------------------
 
--- XXX: this design is too weird
--- i don't understand 90% of it but i keep run into problems
--- should we reconsider for a better approach?
+data Construct
+  = Definition DefinitionBlock
+  | Declaration Declaration
+  | Statement Stmt
+  | BlockComment BlockComment
 
 program :: Parser Program
 program = do
   mixed <-
     sepByAlignmentOrSemi
       ( choice
-          [ Left <$> declOrDefnBlock,
-            Right <$> statement program
+          [ Declaration <$> declaration <?> "declaration",
+            Definition <$> definitionBlock <?> "definition block",
+            Statement <$> statement program,
+            BlockComment <$> blockComment <?> "block comment"
           ]
       )
 
-  let (decls, stmts) = Either.partitionEithers mixed
+  let (defns, decls, stmts, blocks) =
+        foldr
+          ( \c (defns', decls', stmts', blocks') ->
+              case c of
+                Definition defn -> (defn : defns', decls', stmts', blocks')
+                Declaration decl -> (defns', decl : decls, stmts', blocks')
+                Statement stmt -> (defns', decls', stmt : stmts', blocks')
+                BlockComment block -> (defns', decls', stmts', block : blocks')
+          )
+          ([], [], [], [])
+          mixed
 
-  return $ Program decls stmts
-
-declOrDefnBlock :: Parser (Either Declaration DefinitionBlock)
-declOrDefnBlock =
-  choice
-    [ Left <$> declaration <?> "declaration",
-      Right <$> definitionBlock <?> "definition block"
-    ]
+  return $ Program defns decls stmts blocks
 
 --------------------------------------------------------------------------------
 -- Declaration

@@ -3,9 +3,14 @@
 
 module Syntax.Parser.Stmt where
 
-import qualified Data.Text as Text
 import GCL.Range
-import Syntax.Concrete hiding (Op)
+import Syntax.Concrete.Types
+    ( BlockComment(..),
+      CommentContent(..),
+      GdCmd(..),
+      Program,
+      SepBy,
+      Stmt(..) )
 import Syntax.Parser.Basics
 import Syntax.Parser.Expr
 import Syntax.Parser.Lexer
@@ -140,21 +145,28 @@ spec =
     notTokSpecClose _ = True
 
 blockComment :: Parser BlockComment
-blockComment = BlockComment <$>
-  tokenBlockCommentOpen <*> (try proofBlock <|> comment) <*> tokenBlockCommentClose
+blockComment =
+  BlockComment
+    <$> tokenBlockCommentOpen
+    <*> (try proofBlock <|> comment) -- TODO: how do i disable indent requirement
+    <*> tokenBlockCommentClose
+
+proofBlock :: Parser CommentContent
+proofBlock = Proof <$> proof <*> tokenProofSep <*> proofText
+  where
+    proof = takeWhileP (Just "proof") notTokProofSep
+
+    notTokProofSep (R _ TokProofSep) = False
+    notTokProofSep _ = True
+
+    proofText = takeWhileP (Just "proof text") notTokBlockCommentClose
+
+comment :: Parser CommentContent
+comment = Comment <$> takeWhileP (Just "comment") notTokBlockCommentClose
 
 notTokBlockCommentClose :: R Tok -> Bool
 notTokBlockCommentClose (R _ TokBlockCommentClose) = False
 notTokBlockCommentClose _ = True
-
-proofBlock :: Parser CommentContent
-proofBlock = withRange $ Proof <$> expression <*> tokenProofSep <*> proofText
-  where
-    proofText = takeWhileP (Just "proof") notTokBlockCommentClose
-
-
-comment :: Parser CommentContent
-comment = withRange $ Comment <$> takeWhileP (Just "comment") notTokBlockCommentClose
 
 -- proofBlock :: Parser CommentContent
 -- proofBlock = do

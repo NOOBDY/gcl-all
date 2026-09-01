@@ -82,12 +82,6 @@ tokenHoleOpen = adapt TokHoleOpen "{!"
 tokenHoleClose :: Parser (Token "!}")
 tokenHoleClose = adapt TokHoleClose "!}"
 
--- tokenProofOpen :: Parser (Token "{-")
--- tokenProofOpen = adapt TokProofOpen "{-"
-
--- tokenProofClose :: Parser (Token "-}")
--- tokenProofClose = adapt TokProofClose "-}"
-
 tokenBlockOpen :: Parser (Token "|[")
 tokenBlockOpen = adapt TokBlockOpen "|["
 
@@ -172,4 +166,3 @@ tokenArrow =
 
 tokenUnderscore :: Parser (Token "_")
 tokenUnderscore = adapt TokUnderscore "underscore \"_\""
-

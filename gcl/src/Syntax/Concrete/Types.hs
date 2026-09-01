@@ -7,7 +7,6 @@
 
 module Syntax.Concrete.Types where
 
-import Data.Text (Text)
 import GCL.Range (MaybeRanged (..), Pos, R, Range, Ranged (..), mkRange)
 import GHC.Base (Symbol)
 import GHC.Generics (Generic)
@@ -49,7 +48,8 @@ data SepBy (sep :: Symbol) a = Head a | Delim a (Token sep) (SepBy sep a)
 -- | Program
 data Program
   = Program
-      [Either Declaration DefinitionBlock] -- constant and variable declarations
+      [DefinitionBlock]
+      [Declaration] -- constant and variable declarations
       [Stmt] -- main program
       [BlockComment]
   deriving (Eq, Show)
@@ -213,6 +213,6 @@ data BlockComment = BlockComment (Token "{-") CommentContent (Token "-}")
   deriving (Eq, Show)
 
 data CommentContent
-  = Comment [R Tok] Range
-  | Proof Expr (Token "---") [R Tok] Range
+  = Comment [R Tok]
+  | Proof [R Tok] (Token "---") [R Tok]
   deriving (Eq, Show)
