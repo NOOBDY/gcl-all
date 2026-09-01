@@ -284,8 +284,6 @@ instance PrettyWithRange Stmt where
   --   TokDedent            -> ""
   --   TokNewline           -> ""
   --   _ -> show Tok
-  prettyWithRange (Proof _ _ whole r) =
-    fromDoc (Just r) (pretty whole)
   prettyWithRange (Alloc p a n l es r) =
     prettyWithRange p
       <> prettyWithRange a

@@ -224,7 +224,6 @@ instance CollectHole C.Stmt where
   collectHole (C.If _ ss _) = collectHole ss
   collectHole (C.SpecQM range) = [(StmtHole, range)]
   collectHole (C.Spec {}) = mempty
-  collectHole (C.Proof {}) = mempty
   collectHole (C.Alloc _ _ _ _ es _) = collectHole es
   collectHole (C.HLookup _ _ _ a) = collectHole a
   collectHole (C.HMutate _ a _ b) = collectHole a <> collectHole b

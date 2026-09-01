@@ -58,7 +58,6 @@ instance MaybeRanged Stmt where
   maybeRangeOf (If l _ r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (SpecQM l) = Just l
   maybeRangeOf (Spec l _ r) = maybeRangeOf l <---> maybeRangeOf r
-  maybeRangeOf (Proof _ _ _ r) = Just r
   maybeRangeOf (Alloc l _ _ _ _ r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (HLookup l _ _ r) = maybeRangeOf l <---> maybeRangeOf r
   maybeRangeOf (HMutate l _ _ r) = maybeRangeOf l <---> maybeRangeOf r

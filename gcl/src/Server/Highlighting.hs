@@ -168,10 +168,6 @@ instance Collect () Highlighting Stmt where
     Spec tokA _ tokB -> do
       addHighlighting J.SemanticTokenTypes_Keyword [] tokA
       addHighlighting J.SemanticTokenTypes_Keyword [] tokB
-    Proof _ _ _ range -> do
-      addHighlighting J.SemanticTokenTypes_Keyword [] range
-    -- addHighlighting J.SemanticTokenTypes_Keyword [] tokA
-    -- addHighlighting J.SemanticTokenTypes_Keyword [] tokB
     Alloc a tok tokNew _ bs _ -> do
       collect (AsVariable a)
       addHighlighting J.SemanticTokenTypes_Keyword [] tok

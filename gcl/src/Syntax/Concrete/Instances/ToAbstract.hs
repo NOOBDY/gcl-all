@@ -205,7 +205,6 @@ instance ToAbstract Stmt A.Stmt where
       toAbstract' (Spec l xs r) = do
         let text = docToText $ toDoc $ prettyWithRange (map (fmap show) xs)
         return $ const (A.Spec text (rangeOf l <> rangeOf r))
-      toAbstract' (Proof anchor contents _ r) = return $ const (A.Proof anchor contents r)
       toAbstract' (Alloc p _ _ _ es _) = A.Alloc p <$> toAbstract es
       toAbstract' (HLookup x _ _ e) = A.HLookup x <$> toAbstract e
       toAbstract' (HMutate _ e1 _ e2) = A.HMutate <$> toAbstract e1 <*> toAbstract e2
